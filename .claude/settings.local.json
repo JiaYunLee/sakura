@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Read(//var/folders/c_/ls8_p6913ns1__ky3qhwkqbc0000gn/T/TemporaryItems/NSIRD_screencaptureui_45ABHD//**)",
+      "Read(//var/folders/c_/ls8_p6913ns1__ky3qhwkqbc0000gn/T/TemporaryItems//**)",
+      "Bash(open:*)",
+      "Bash(grep -v \"base64\" echo \"---\" grep -n \"CATCH petals\\\\|drawBg\\\\|spriteScale\\\\|drawImage\\(bgImg\" \"/Users/jiayunli/Desktop/learning/0330 sakura/sakura.html\")",
+      "Bash(grep -v \"base64\" echo \"---\" grep -n \"isDead\\\\|update\\(wind\\\\|spill\" \"/Users/jiayunli/Desktop/learning/0330 sakura/sakura.html\")",
+      "Bash(grep -v \"base64\" echo \"---\" sed -n '255,275p' \"/Users/jiayunli/Desktop/learning/0330 sakura/sakura.html\")",
+      "Bash(grep -v \"base64\" echo \"---\" grep -n \"haiku\\\\|showNext\\\\|haikuIdx\\\\|windVy\\\\|wristYHistory\" \"/Users/jiayunli/Desktop/learning/0330 sakura/sakura.html\")",
+      "Bash(file \"/Users/jiayunli/Desktop/learning/0330 sakura/petals/final\"/*.png)",
+      "Bash(file:*)"
+    ]
+  }
+}
