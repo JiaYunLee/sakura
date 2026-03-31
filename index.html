@@ -59,6 +59,22 @@
   /* catch hint */
   #cuppingHint { display:none; }
 
+  /* ── Circular camera preview ── */
+  #camPreview {
+    position:absolute; bottom:58px; left:58px; z-index:14;
+    width:150px; height:150px; border-radius:50%; overflow:hidden;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.6s ease;
+    box-shadow:0 4px 24px rgba(0,0,0,0.12);
+    border:2px solid rgba(255,255,255,0.55);
+  }
+  #camPreview.active { opacity:1; }
+  #camPreviewVid {
+    width:100%; height:100%;
+    object-fit:cover;
+    transform:scaleX(-1);
+  }
+
 </style>
 </head>
 <body>
@@ -87,6 +103,7 @@
   <button id="camBtn"><span id="camDot"></span><span id="camLabel">enable camera</span></button>
 </div>
 <div id="cuppingHint"></div>
+<div id="camPreview"><video id="camPreviewVid" autoplay playsinline muted></video></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script>
@@ -630,6 +647,10 @@ async function startCamera(){
   cameraActive=true; sendLoop=true;
   dot.classList.add('on');
   lbl.textContent='disable camera';
+  // Show circular preview
+  const prevVid=document.getElementById('camPreviewVid');
+  prevVid.srcObject=cameraStream;
+  document.getElementById('camPreview').classList.add('active');
   (async function send(){
     if(!sendLoop) return;
     try{ if(vid.readyState>=2) await handsMP.send({image:vid}); }catch(_){}
@@ -641,6 +662,9 @@ function stopCamera(){
   sendLoop=false; cameraActive=false;
   if(cameraStream){ cameraStream.getTracks().forEach(t=>t.stop()); cameraStream=null; }
   vid.srcObject=null;
+  // Hide circular preview
+  document.getElementById('camPreviewVid').srcObject=null;
+  document.getElementById('camPreview').classList.remove('active');
   processGestures([]);
   hX.clearRect(0,0,hC.width,hC.height);
   document.getElementById('camDot').classList.remove('on');
