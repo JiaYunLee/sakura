@@ -59,6 +59,45 @@
   /* catch hint */
   #cuppingHint { display:none; }
 
+  /* ── Rotate prompt (portrait mobile only) ── */
+  #rotatePrompt {
+    display:none;
+    position:fixed; inset:0; z-index:999;
+    background:linear-gradient(160deg,#f0e8f0 0%,#e8f0f4 100%);
+    flex-direction:column; align-items:center; justify-content:center;
+    gap:28px;
+  }
+  #rotateIcon {
+    width:52px; height:52px;
+    border:2px solid rgba(90,58,72,0.35);
+    border-radius:12px;
+    position:relative;
+    animation:rotateHint 2.2s ease-in-out infinite;
+  }
+  #rotateIcon::before {
+    content:'';
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:18px; height:12px;
+    border:1.5px solid rgba(90,58,72,0.35);
+    border-radius:2px;
+  }
+  @keyframes rotateHint {
+    0%,30%  { transform:rotate(0deg); }
+    55%,85% { transform:rotate(90deg); }
+    100%    { transform:rotate(0deg); }
+  }
+  #rotateText {
+    font-size:14px; font-weight:300; letter-spacing:0.12em;
+    color:#5a3a48; opacity:0.65; text-align:center; line-height:1.8;
+  }
+  @media (max-width:768px) and (orientation:portrait) {
+    #rotatePrompt { display:flex; }
+    #loading, #stage, #guide, #camPreview { display:none !important; }
+  }
+  @media (max-width:768px) and (orientation:landscape) {
+    #stage { inset:10px; }
+  }
+
   /* ── Circular camera preview ── */
   #camPreview {
     position:absolute; bottom:58px; left:58px; z-index:14;
@@ -105,6 +144,11 @@
 <div id="cuppingHint"></div>
 <div id="camPreview"><video id="camPreviewVid" autoplay playsinline muted></video></div>
 
+<div id="rotatePrompt">
+  <div id="rotateIcon"></div>
+  <div id="rotateText">please rotate your device<br>this experience works in landscape</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <script>
 'use strict';
@@ -145,9 +189,18 @@ const PETAL_SPRITES = [];
 
 function drawBg(){
   function _draw(){
-    const S=1.18, W=bgC.width, H=bgC.height;
-    const dw=W*S, dh=H*S, dx=-(dw-W)/2, dy=-(dh-H)/2;
-    bgX.drawImage(bgImg,dx,dy,dw,dh);
+    const W=bgC.width, H=bgC.height;
+    const iW=bgImg.naturalWidth, iH=bgImg.naturalHeight;
+    let dw, dh;
+    if(window.innerWidth<=768){
+      // Mobile: preserve image aspect ratio (cover — scale by larger ratio)
+      const scale=Math.max(W/iW, H/iH)*1.05;
+      dw=iW*scale; dh=iH*scale;
+    } else {
+      // Desktop: existing fill behaviour
+      dw=W*1.18; dh=H*1.18;
+    }
+    bgX.drawImage(bgImg,-(dw-W)/2,-(dh-H)/2,dw,dh);
   }
   if(bgImg.complete&&bgImg.naturalWidth>0){ _draw(); }
   else { bgImg.onload=_draw; }
